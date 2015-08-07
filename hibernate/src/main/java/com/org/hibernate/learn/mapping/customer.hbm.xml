@@ -1,0 +1,35 @@
+<hibernate-mapping>
+	<class name="Customer" table="CUSTOMERS">
+		<id name="id">
+			<column name="ID" />
+			<generator class="native" />
+		</id>
+
+		<property name="NAME">
+			<column name="NAME" not-null="true" />
+		</property>
+
+		<property name="AGE" />
+
+		<set name="orders" cascade="delete" inverse="true">
+			<key column="CUSTOMER_ID" />
+			<one-to-many class="ORDER" />
+		</set>
+
+		<component name="homeAddress" class="Address">
+			<parent name="customer" />
+			<property name="province" type="string" column="HOME_PROVINCE" />
+			<property name="city" type="string" column="HOME_CITY" />
+			<property name="street" type="string" column="HOME_STEET" />
+			<property name="zipcode" type="string" column="HOME_ZIPCODE" />
+		</component>
+
+		<component name="comAddress" class="Address">
+			<parent name="customer" />
+			<property name="province" type="string" column="COM_PROVINCE" />
+			<property name="city" type="string" column="COM_CITY" />
+			<property name="street" type="string" column="COM_STEET" />
+			<property name="zipcode" type="string" column="COM_ZIPCODE" />
+		</component>
+	</class>
+</hibernate-mapping>
