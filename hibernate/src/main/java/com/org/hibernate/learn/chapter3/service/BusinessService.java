@@ -4,9 +4,12 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.sql.Date;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -29,9 +32,27 @@ public class BusinessService {
 		}
 	}
 
-	public void finallAllCUstomers(ServletContext context, PrintWriter out)
+	public void findAllCustomers(ServletContext context, PrintWriter out)
 			throws Exception {
-
+		Session session = sessionFactory.openSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			Query query = session
+					.createQuery("from Customer as c order by c.name asc");
+			List<Customer> customers = query.list();
+			for (Iterator<Customer> it = customers.iterator(); it.hasNext();) {
+				printCustomer(context, out, it.next());
+			}
+			tx.commit();
+		} catch (RuntimeException e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			throw e;
+		} finally {
+			session.close();
+		}
 	}
 
 	public void saveCustomer(Customer customer) {
@@ -52,7 +73,21 @@ public class BusinessService {
 	}
 
 	public void loadAndUpdateCustomer(Long customer_id, String address) {
-
+		Session session = sessionFactory.openSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			Customer c = (Customer) session.get(Customer.class, customer_id);
+			c.setAddress(address);
+			tx.commit();
+		} catch (RuntimeException e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			throw e;
+		} finally {
+			session.close();
+		}
 	}
 
 	public void deleteCustomer(Customer customer) {
@@ -143,6 +178,8 @@ public class BusinessService {
 
 		customer.setBirthday(Date.valueOf("1980-05-06"));
 		saveCustomer(customer);
+		loadAndUpdateCustomer(customer.getId(), "Beijing");
+		findAllCustomers(context, out);
 	}
 
 	public static void main(String[] args) throws Exception {
