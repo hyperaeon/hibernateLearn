@@ -1,0 +1,11 @@
+<hibernate-mapping package="com.org.hibernate.learn.chapter5">
+	<class name="Dictionary" table="DICTIONARIES" mutable="false">
+		<id name="id">
+			<generator class="increment" />
+		</id>
+
+		<property name="type" access="field" />
+		<property name="key" access="field" column="TYPE_KEY" />
+		<property name="value" access="field" />
+	</class>
+</hibernate-mapping>

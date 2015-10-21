@@ -1,0 +1,13 @@
+<hibernate-mapping package="com.org.hibernate.learn.chapter5">
+	<class name="Order" dynamic-insert="true" dynamic-update="true">
+		<id name="id">
+			<generator class="increment" />
+		</id>
+
+		<property name="orderNumber" column="ORDER_NUMBER" />
+
+		<property name="price" />
+		<many-to-one name="customer" column="CUSTOMER_ID" class="Customer"
+			not-null="true" />
+	</class>
+</hibernate-mapping>

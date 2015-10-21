@@ -1,0 +1,22 @@
+<hibernate-mapping package="com.org.hibernate.learn.chapter5">
+	<class name="Customer" dynamic-insert="true" dynamic-update="true">
+		<id name="id">
+			<generator class="increment" />
+		</id>
+
+		<property name="name" />
+		<property name="sex" access="field" />
+		<set name="orders" inverse="true" cascade="save-update">
+
+			<key column="CUSTOMER_ID" />
+			<one-to-many class="com.org.hibernate.learn.model.Order" />
+		</set>
+		<property name="totalPrice"
+			formula="(select sum(o.PRICE) from ORDERS o where o.CUSTOMER_ID=ID)" />
+
+		<property name="description" type="text" column="'CUSTOMER DESCRIPTION'"/>
+		
+
+	
+	</class>
+</hibernate-mapping>
